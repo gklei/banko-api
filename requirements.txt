@@ -1,0 +1,6 @@
+flask
+flask-restful
+flask-sqlalchemy
+flask-jwt
+pylint-flask
+plaid-python

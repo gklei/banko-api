@@ -1,0 +1,18 @@
+/.venv/
+/.idea/
+.DS_Store
+__pycache__/
+*.pyc
+ 
+*.egg-info/
+
+# local configuration
+/config/local_*.py
+/local_configure
+/local_configure.json
+/configurations/*/*
+
+# local credentials
+/credentials/local_*.py
+
+/.vscode/
