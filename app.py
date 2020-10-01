@@ -4,7 +4,7 @@ from flask_jwt import JWT, current_identity, jwt_required
 
 from security import authenticate, identity
 from resources.user import UserRegister
-from resources.link import CreateLinkToken, CreateLinkItem
+from resources.link import CreateLinkToken, CreateLinkItem, LinkItem, LinkItemList, AccountList
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
@@ -19,8 +19,13 @@ def create_tables():
 jwt = JWT(app, authenticate, identity)
 
 api.add_resource(UserRegister, '/register')
+
 api.add_resource(CreateLinkToken, '/create_link_token')
 api.add_resource(CreateLinkItem, '/create_link_item')
+
+api.add_resource(LinkItem, '/link_item/<string:item_id>', endpoint='link_item_resource')
+api.add_resource(LinkItemList, '/link_items')
+api.add_resource(AccountList, '/link_item/<string:item_id>/accounts', endpoint='link_item_accounts_resource')
 
 if __name__ == '__main__':
   from db import db

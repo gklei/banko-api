@@ -41,3 +41,53 @@ class CreateLinkItem(Resource):
       'item_id': exchange_response['item_id']
     }
     return jsonify(response)
+
+class LinkItem(Resource):
+  @jwt_required()
+  def get(self, item_id):
+    item = LinkItemModel.find_by_item_id(item_id)
+    if item is None:
+      return {'message': 'Item not found'}, 404
+    
+    if item.user_id != current_identity.id:
+      return {'message': 'You cannot access this item'}, 400
+
+    response = client.Item.get(item.access_token)
+    return jsonify(response['item'])
+
+  @jwt_required()
+  def delete(self, item_id):
+    item = LinkItemModel.find_by_item_id(item_id)
+    if item is not None:
+      if item.user_id == current_identity.id:
+        item.delete_from_db()
+        return jsonify({'message': 'Item deleted successfully'})
+      else:
+        return {'message': 'You cannot delete this item'}, 400
+    else:
+      return {'message': 'Item not found'}, 404
+
+class LinkItemList(Resource):
+  @jwt_required()
+  def get(self):
+    items = LinkItemModel.find_by_user_id(current_identity.id)
+    response = {
+      'items': [
+        client.Item.get(i.access_token)['item']
+        for i in items
+      ]
+    }
+    return jsonify(response)
+
+class AccountList(Resource):
+  @jwt_required()
+  def get(self, item_id):
+    item = LinkItemModel.find_by_item_id(item_id)
+    if item is None:
+      return {'message': 'Item not found'}, 404
+    
+    if item.user_id != current_identity.id:
+      return {'message': 'You cannot access this item'}, 400
+    
+    response = client.Accounts.get(item.access_token)
+    return jsonify(response)
