@@ -6,6 +6,7 @@ class UserModel(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   username = db.Column(db.String(80))
   password = db.Column(db.String(80))
+  link_items = db.relationship('LinkItemModel')
 
   def __init__(self, username: str, password: str):
     self.username = username
