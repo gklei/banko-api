@@ -91,3 +91,15 @@ class AccountList(Resource):
     
     response = client.Accounts.get(item.access_token)
     return jsonify(response)
+
+class AllAccountsList(Resource):
+  @jwt_required()
+  def get(self):
+    items = LinkItemModel.find_by_user_id(current_identity.id)
+    response = {
+      'accounts': [
+        client.Accounts.get(i.access_token)
+        for i in items
+      ]
+    }
+    return jsonify(response)
