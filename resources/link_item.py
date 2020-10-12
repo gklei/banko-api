@@ -52,8 +52,8 @@ class LinkItem(Resource):
     if item.user_id != current_identity.id:
       return {'message': 'You cannot access this item'}, 400
 
-    response = client.Item.get(item.access_token)
-    return jsonify(response['item'])
+    response = client.Item.get(item.access_token)['item']
+    return jsonify({'item': response})
 
   @jwt_required()
   def delete(self, item_id):
