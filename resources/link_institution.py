@@ -4,16 +4,6 @@ from flask_jwt import jwt_required, current_identity
 from models.link import LinkItemModel
 from plaid_client.client import client
 
-class Institution(Resource):
-  @jwt_required()
-  def get(self, institution_id):
-    response = client.Institutions.get_by_id(
-      institution_id,
-      _options={
-        'include_optional_metadata': True
-      })
-    return jsonify(response)
-
 class LinkedInstitutions(Resource):
   @jwt_required()
   def get(self):
@@ -25,10 +15,12 @@ class LinkedInstitutions(Resource):
     response = []
     for item in item_objects:
       ins_response = client.Institutions.get_by_id(
-      item['institution_id'],
-      _options={
-        'include_optional_metadata': True
-      })['institution']
+        institution_id=item['institution_id'],
+        _options={
+          'include_optional_metadata': True
+        }
+      )['institution']
+
       response.append({
         'item_id': item['item_id'],
         'institution_id': item['institution_id'],
